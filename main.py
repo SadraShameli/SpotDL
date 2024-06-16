@@ -1,6 +1,7 @@
 import os
-import sys
 import multiprocessing
+from multiprocessing import Process
+from typing import List
 from urllib.parse import urlparse, urlunparse
 
 
@@ -28,18 +29,34 @@ def get_songs_list(dir):
     return list(song_set)
 
 
-def download_songs(song_url, dir):
-    url = song_url if isinstance(song_url, str) else " ".join(song_url)
-    output = f'"{dir}/{{list-name}}/{{artists}} - {{title}}.{{output-ext}}"'
-    command = f"spotdl download {url} --output {output} --threads {multiprocessing.cpu_count()}"
+def download_songs(urls_list, dir):
+    urls = urls_list if isinstance(urls_list, str) else " ".join(urls_list)
+    output = f'"{dir}/{{list-name}}/{{artists}} - {{title}}.{{output-ext}}" --threads {multiprocessing.cpu_count()}'
+    command = f"spotdl download {urls} --output {output}"
     os.system(command)
+
+    # --threads {multiprocessing.cpu_count()
 
 
 def main():
-    dir = "downloaded"
-    os.makedirs(dir, exist_ok=True)
-    songs = get_songs_list("urls")
-    download_songs(songs, dir)
+    output_dir = "downloaded"
+    os.makedirs(output_dir, exist_ok=True)
+    urls = get_songs_list("urls")
+
+    processes: List[Process] = []
+    for url in urls:
+        p = Process(
+            target=download_songs,
+            args=(
+                url,
+                output_dir,
+            ),
+        )
+        p.start()
+        processes.append(p)
+
+    for p in processes:
+        p.join()
 
 
 if __name__ == "__main__":
