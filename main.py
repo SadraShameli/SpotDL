@@ -35,8 +35,6 @@ def download_songs(urls_list, dir):
     command = f"spotdl download {urls} --output {output}"
     os.system(command)
 
-    # --threads {multiprocessing.cpu_count()
-
 
 def main():
     output_dir = "downloaded"
