@@ -1,6 +1,6 @@
 ## A Python script to simplify downloading songs from Spotify
 
-- The script will search for songs inside all .txt files inside the **"urls/"** folder.
+- The script will search for songs inside all **"*.txt"** files inside the **"urls/"** folder.
 
 - Downloaded songs will be stored inside the **"downloaded/"** folder.
 
